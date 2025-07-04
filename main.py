@@ -28,9 +28,9 @@ class DigestRequest(BaseModel):
 
 @app.post("/generator")
 async def generate_digest(request: DigestRequest):
+    print("🔥 Received DigestRequest:", request)
     result = main_pipeline(request.url, request.direction)
-    return result  # should be a dict (FastAPI will convert to JSON)
-
+    return result
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=8000)
