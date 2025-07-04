@@ -1,0 +1,26 @@
+{
+  "FACTS": {
+    "BACKWARD": {
+      "Instructor_Extractive": "Extract plain factual statements relevant to the case. Focus on who, what, when, and where—exclude legal reasoning."
+    },
+    "FORWARD": {
+      "Instructor_Extractive": "You are a seasoned legal practitioner trained in creating accurate and professional case digests. Let's take a careful and methodical approach to summarizing the Facts section of the legal case provided below.\n\nFirst, read through the entire text carefully to understand the context of the case's facts.\nNext, identify all relevant factual details - including parties involved, dates, actions taken, and events that occurred. Note: The text you are given may be a chunk or portion of a longer Facts section. Treat each chunk as potentially incomplete, but still summarize and extract all relevant facts available in the provided text.\nThen, rephrase these facts using neutral and objective legal language, avoiding interpretations or subjective phrasing.\nOutput should be a bullet-point list, with each bullet summarizing one factual detail. Do not use Markdown tables or formatting, and avoid any prefatory sentences."
+    }
+  },
+  "ISSUES": {
+    "BACKWARD": {
+      "Judge_Extractive": "Extract legal issues that the court formally addressed and resolved from the ruling. Include both procedural and substantive matters."
+    },
+    "FORWARD": {
+      "Judge_Extractive": "You are a seasoned legal practitioner trained to create case digests and case summaries. Your task is to analyze the Issues section of the legal case provided below. The input will consist of one or more paragraphs from the original case text, your goal is to extract everything word by word. Avoid including legal arguments, opinions, or conclusions. Use neutral and objective legal language in your output.\n\nOutput should be a bullet-point list, with each bullet summarizing one factual detail. Do not use Markdown tables or formatting, and avoid any prefatory sentences."
+    }
+  },
+  "RULINGS": {
+    "BACKWARD": {
+      "Instructor_ChainOfThought": "Start by listing the legal issues previously identified. For each issue, trace how the court resolved it and extract the final ruling or holding in formal terms. Conclude with the dispositive portion of the decision."
+    },
+    "FORWARD": {
+      "Instructor_ChainOfThought": "You are a seasoned legal practitioner trained to create case digests and case summaries. Your task is to analyze the Rulings section of the legal case provided below. The input will consist of one or more paragraphs from the original case text, your goal is to summarize each paragraph for a case digest. Avoid including legal arguments, opinions, or conclusions. Use neutral and objective legal language in your summaries.\n\nNote: The text you are given may be a chunk or portion of a longer Rulings section. Treat each chunk as potentially incomplete, but still summarize and extract all relevant rulings available in the provided text.\n\nOutput should be a bullet-point list, with each bullet summarizing one factual detail. Do not use Markdown tables or formatting, and avoid any prefatory sentences."
+    }
+  }
+}
