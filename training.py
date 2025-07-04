@@ -317,20 +317,19 @@ def main_pipeline(url: str, direction: str):
         "rulings": clean_summary_output(generate_gemini_response(config["RULINGS"][direction.upper()]["Instructor_ChainOfThought"], rulings_input)),
     }
 
-    facts_scores = evaluate_all(summary["facts"], "\n".join(sections["Facts"]))
-    issues_scores = evaluate_all(summary["issues"], "\n".join(sections["Issues"]))
-    rulings_scores = evaluate_all(summary["rulings"], "\n".join(sections["Ruling"]))
-
-    filename = f"{metadata['G.R. Number'].replace(' ', '_')}_{direction}_digested.docx"
-    csv_filename = f"{metadata['G.R. Number'].replace(' ', '_')}_{direction}_output.csv"
+    scores = {
+        "facts": evaluate_all(summary["facts"], "\n".join(sections["Facts"])),
+        "issues": evaluate_all(summary["issues"], "\n".join(sections["Issues"])),
+        "rulings": evaluate_all(summary["rulings"], "\n".join(sections["Ruling"])),
+    }
 
     return {
         "summary": summary,
-        "scores": {
-            "facts": facts_scores,
-            "issues": issues_scores,
-            "rulings": rulings_scores
+        "original": {
+            "facts": "\n".join(sections["Facts"]),
+            "issues": "\n".join(sections["Issues"]),
+            "rulings": "\n".join(sections["Ruling"]),
         },
-        "downloadUrl": f"/downloads/{filename}",
-        "csvUrl": f"/generated_csv/{csv_filename}"
+        "scores": scores,
+        "metadata": metadata
     }
