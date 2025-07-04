@@ -12,7 +12,11 @@ app = FastAPI()
 # CORS setup (allow from your Vercel frontend)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://celtzers-website.vercel.app"],
+    allow_origins=[
+        "https://celtzers-website.vercel.app",
+        "https://*.vercel.app",              # Vercel preview deployments
+        "http://localhost:3000"              # For local dev
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
