@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+beautifulsoup4
+requests
+docx
+python-docx
+numpy
+bert_score
+rouge_score
+python-dotenv
+google-generativeai
