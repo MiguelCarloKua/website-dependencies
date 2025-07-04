@@ -9,7 +9,6 @@ from training import main_pipeline
 
 app = FastAPI()
 
-# CORS setup (allow from your Vercel frontend)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
