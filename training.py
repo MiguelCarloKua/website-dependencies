@@ -281,29 +281,20 @@ def evaluate_all(generated: str, reference: str):
         "bert-score": round(bert["bert-score"], 4),
     }
 
-
 def main_pipeline(url: str, direction: str):
-    if len(sys.argv) < 3:
-        print("Usage: training.py <url> <direction>")
-        return
-
-    url = sys.argv[1]
-    direction = sys.argv[2].lower()
+    direction = direction.lower()
     if direction not in ["forward", "backward"]:
-        print(json.dumps({ "error": "Direction must be either 'forward' or 'backward'" }))
-        return
+        return { "error": "Direction must be either 'forward' or 'backward'" }
 
     soup = fetch_court_case(url)
     if not soup:
-        print(json.dumps({ "error": "Failed to fetch or parse the URL" }))
-        return
+        return { "error": "Failed to fetch or parse the URL" }
 
     text = extract_full_text(soup)
     if is_text_garbled(text):
-        print(json.dumps({ "error": "Extracted text is too short or garbled" }))
-        return
+        return { "error": "Extracted text is too short or garbled" }
 
-    base_dir = Path(__file__).resolve().parent.parent
+    base_dir = Path(__file__).resolve().parent
     with open(base_dir / "data/config.json", "r") as f:
         config = json.load(f)
 
@@ -326,55 +317,12 @@ def main_pipeline(url: str, direction: str):
         "rulings": clean_summary_output(generate_gemini_response(config["RULINGS"][direction.upper()]["Instructor_ChainOfThought"], rulings_input)),
     }
 
-                    # Compute evaluation metrics
     facts_scores = evaluate_all(summary["facts"], "\n".join(sections["Facts"]))
     issues_scores = evaluate_all(summary["issues"], "\n".join(sections["Issues"]))
     rulings_scores = evaluate_all(summary["rulings"], "\n".join(sections["Ruling"]))
 
-    output_dir = base_dir / "public/downloads"
-    output_dir.mkdir(parents=True, exist_ok=True)
     filename = f"{metadata['G.R. Number'].replace(' ', '_')}_{direction}_digested.docx"
-    out_path = output_dir / filename
-    write_docx(summary, out_path, metadata)
-
-    # Save as CSV
-    csv_dir = base_dir / "public/generated_csv"
-    csv_dir.mkdir(parents=True, exist_ok=True)
-    csv_path = csv_dir / f"{metadata['G.R. Number'].replace(' ', '_')}_{direction}_output.csv"
-    with open(csv_path, "w", newline="", encoding="utf-8") as csvfile:
-        writer = csv.writer(csvfile)
-        writer.writerow([
-            "G.R. Number",
-            "Generated_Facts", "Generated_Issues", "Generated_Rulings",
-            "Original_Facts", "Original_Issues", "Original_Rulings",
-            "Facts_ROUGE-1", "Facts_ROUGE-L", "Facts_BERTScore",
-            "Issues_ROUGE-1", "Issues_ROUGE-L", "Issues_BERTScore",
-            "Rulings_ROUGE-1", "Rulings_ROUGE-L", "Rulings_BERTScore"
-        ])
-
-        writer.writerow([
-            metadata["G.R. Number"],
-            summary["facts"], summary["issues"], summary["rulings"],
-            "\n".join(sections["Facts"]),
-            "\n".join(sections["Issues"]),
-            "\n".join(sections["Ruling"]),
-            facts_scores["rouge-1"], facts_scores["rouge-l"], facts_scores["bert-score"],
-            issues_scores["rouge-1"], issues_scores["rouge-l"], issues_scores["bert-score"],
-            rulings_scores["rouge-1"], rulings_scores["rouge-l"], rulings_scores["bert-score"],
-        ])
-
-
-    # Compute evaluation metrics
-    print(json.dumps({
-        "summary": summary,
-        "downloadUrl": f"/downloads/{filename}",
-        "csvUrl": f"/generated_csv/{csv_path.name}",
-        "scores": {
-            "facts": facts_scores,
-            "issues": issues_scores,
-            "rulings": rulings_scores
-        }
-    }))
+    csv_filename = f"{metadata['G.R. Number'].replace(' ', '_')}_{direction}_output.csv"
 
     return {
         "summary": summary,
