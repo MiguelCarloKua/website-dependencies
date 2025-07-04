@@ -282,7 +282,7 @@ def evaluate_all(generated: str, reference: str):
     }
 
 
-def main():
+def main_pipeline(url: str, direction: str):
     if len(sys.argv) < 3:
         print("Usage: training.py <url> <direction>")
         return
@@ -376,5 +376,13 @@ def main():
         }
     }))
 
-if __name__ == "__main__":
-    main()
+    return {
+        "summary": summary,
+        "scores": {
+            "facts": facts_scores,
+            "issues": issues_scores,
+            "rulings": rulings_scores
+        },
+        "downloadUrl": f"/downloads/{filename}",
+        "csvUrl": f"/generated_csv/{csv_filename}"
+    }
